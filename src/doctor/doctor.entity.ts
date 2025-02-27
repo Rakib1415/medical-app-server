@@ -1,0 +1,42 @@
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, ManyToMany, JoinColumn, OneToMany, JoinTable } from 'typeorm';
+
+import { User } from 'src/users/users.entity';
+import { Education } from 'src/education/education.entity';
+import { Experience } from 'src/experience/experience.entity';
+import { CurrentMedication } from 'src/current-medication/current-medication.entity';
+import { Prescription } from '@/prescription/prescription.entity';
+import { Report } from '@/report/report.entity';
+
+@Entity()
+export class Doctor {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @OneToOne(() => User)
+  @JoinColumn()
+  user: User;
+  
+
+  @ManyToMany(() => Education)
+  @JoinTable()
+  educations: Education[];
+
+  @ManyToMany(() => Experience)
+  @JoinTable()
+  experiences: Experience[];
+
+  @OneToMany(() => CurrentMedication, currentMedication => currentMedication.doctor)
+  currentMedications: CurrentMedication[];
+
+  @OneToMany(() => Prescription, (prescription) => prescription.doctor, {
+    cascade: true, // Automatically persist related prescriptions if a patient is saved
+    onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
+  })
+  prescriptions: Prescription[];
+
+  @OneToMany(() => Report, (report) => report.doctor, {
+    cascade: true, // Automatically persist related prescriptions if a patient is saved
+    onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
+  })
+  reports: Report[];
+}
