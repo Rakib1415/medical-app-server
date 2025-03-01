@@ -10,7 +10,9 @@ RUN apk add --no-cache \
 # Set working directory
 WORKDIR /app
 
-RUN npm install -g @nestjs/cli
+RUN rm -rf node_modules
+
+RUN npm install -g @nestjs/cli ts-node typeorm-ts-node-esm
 
 # Copy package.json and pnpm-lock.yaml first (for better caching)
 COPY package.json pnpm-lock.yaml ./
@@ -30,6 +32,8 @@ RUN ls -la /app
 # Set environment variables
 ENV NODE_ENV=production
 
+ENV NODE_PATH=/app/node_modules
+
 # Ensure TypeScript is built before the app starts (run tsc)
 RUN pnpm run build
 
@@ -43,4 +47,5 @@ RUN pnpm prune --prod
 EXPOSE 3000
 
 # Start the application
-CMD [ "npm", "run", "start:dev" ]
+CMD [ "npm", "run", "start:dev"]
+# CMD ["sh", "-c", "pnpm run migration:generate && pnpm run migration:run && pnpm run start:dev"]
