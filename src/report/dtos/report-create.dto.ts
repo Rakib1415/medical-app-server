@@ -13,10 +13,10 @@ export class CreateReportDto {
   patient: Patient;
 
   @ApiProperty({
-    description: 'The ID of the doctor',
-    example: 1,
+    description: 'The report title',
+    example: 'Report one',
   })
-  doctor: Doctor;
+  title: string;
 
   @ApiProperty({
     description: 'The doc path',

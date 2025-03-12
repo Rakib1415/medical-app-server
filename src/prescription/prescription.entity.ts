@@ -8,6 +8,9 @@ export class Prescription {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column()
+  title : string;
+
   @ManyToOne(() => Patient, (patient) => patient.prescriptions, {
     onDelete: 'CASCADE', // If a patient is deleted, their prescriptions are deleted too
     eager: true, // Automatically fetch patient details when querying a prescription

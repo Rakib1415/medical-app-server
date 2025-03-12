@@ -60,7 +60,6 @@ export class PrescriptionController {
 
    try{
     const existingDoctor = await this.doctorService.findByUserId(user?.id);
-    console.log({existingDoctor, user})
     const existingPatient = await this.patientService.findOne(prescriptionData.patientId);
   
     if(!existingDoctor){
@@ -84,7 +83,7 @@ export class PrescriptionController {
    }
     const imageUrl = await this.s3Service.uploadFile(file);
 
-     const prescription = await this.prescriptionService.create({docPath : imageUrl, patient : existingPatient, prescriptionDate : prescriptionData?.prescriptionDate, doctor : existingDoctor});
+     const prescription = await this.prescriptionService.create({docPath : imageUrl, patient : existingPatient, prescriptionDate : prescriptionData?.prescriptionDate, doctor : existingDoctor, title : prescriptionData?.title});
 
      return {
       code : '201',

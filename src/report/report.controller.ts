@@ -53,25 +53,10 @@ export class ReportController {
     })
     async create(@UploadedFile() file: any, @Body() reportData: any, @CurrentUser() user: User) {
   
-      if (!reportData.doctorId) {
-        throw new BadRequestException('Doctor ID is required');
-      }
-  
-  
      try{
-      const existingDoctor = await this.doctorService.findOne(reportData.doctorId);
+      
     
       const existingPatient = await this.patientService.findByUserId(user?.id);
-    
-      if(!existingDoctor){
-  
-         return {
-          code : '400',
-          message : "Doctor not found!",
-          data : null,
-          status : false
-         }
-      }
   
       if(!existingPatient){
   
@@ -84,7 +69,7 @@ export class ReportController {
      }
       const imageUrl = await this.s3Service.uploadFile(file);
   
-       const report = await this.reportService.create({docPath : imageUrl, patient : existingPatient, reportDate : reportData?.reportDate, doctor : existingDoctor});
+       const report = await this.reportService.create({docPath : imageUrl, patient : existingPatient, reportDate : reportData?.reportDate, title : reportData?.title});
   
        return {
         code : '201',
@@ -97,8 +82,8 @@ export class ReportController {
      }
     }
 
-    @Get('doctor/:doctorId')
-  async getReportsByPatient(@Param('doctorId', ParseIntPipe) doctorId: number) {
-    return this.reportService.getReportsByDoctor(doctorId);
+    @Get('patient/:patientId')
+  async getReportsByPatient(@Param('patientId', ParseIntPipe) patientId: number) {
+    return this.reportService.getReportsByPatient(patientId);
   }
 }

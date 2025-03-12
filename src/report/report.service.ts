@@ -16,16 +16,16 @@ export class ReportService {
         return this.reportRepository.save(prescription);
       }
 
-      async getReportsByDoctor(doctorId: number): Promise<Report[]> {
+      async getReportsByPatient(patientId: number): Promise<Report[]> {
         
         const reports = await this.reportRepository.find({
-          where: { patient: { id: doctorId } },
-          relations: ['doctor', 'doctor.user', 'patient', 'patient.userId'], // Load patient and its user details
+          where: { patient: { id: patientId } },
+          relations: ['patient', 'patient.userId'], // Load patient and its user details
           order: { reportDate: 'DESC' },
         });
         
         if (!reports.length) {
-          throw new NotFoundException(`No reports found for patient with ID ${doctorId}`);
+          throw new NotFoundException(`No reports found for patient with ID ${patientId}`);
         }
     
         return reports;

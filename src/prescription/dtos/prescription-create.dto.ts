@@ -25,6 +25,12 @@ export class CreatePrescriptionDto {
   docPath: string;
 
   @ApiProperty({
+    description: 'The prescription title',
+    example: 'prescription one',
+  })
+  title: string;
+
+  @ApiProperty({
     description: 'The prescription date',
     example: '2020-01-01',
   })

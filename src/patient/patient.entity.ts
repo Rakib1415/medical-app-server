@@ -1,3 +1,4 @@
+import { Appointment } from '@/appointment/appointment.entity';
 import { Prescription } from '@/prescription/prescription.entity';
 import { Report } from '@/report/report.entity';
 import { CurrentMedication } from 'src/current-medication/current-medication.entity';
@@ -35,4 +36,10 @@ export class Patient {
     onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
   })
   reports: Report[];
+
+  @OneToMany(() => Appointment, (appointment) => appointment.patient, {
+    cascade: true, // Automatically persist related prescriptions if a patient is saved
+    onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
+  })
+  appointments: Appointment[];
 }

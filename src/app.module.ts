@@ -20,6 +20,7 @@ import { SeedModule } from './seed/seed.module';
 import { S3Module } from './s3/s3.module';
 import { PrescriptionModule } from './prescription/prescription.module';
 import { ReportModule } from './report/report.module';
+import { AppointmentModule } from './appointment/appointment.module';
 
 
 @Module({
@@ -30,7 +31,7 @@ import { ReportModule } from './report/report.module';
     global: true,
     secret: 'secret',
     signOptions: { expiresIn: '7d' },
-  }), DoctorModule, EducationModule, ExperienceModule, CurrentMedicationModule, PatientModule, PrescriptionModule, ReportModule, OperationHistoryModule, HealthStatusModule, CallModule, SeedModule, S3Module],
+  }), DoctorModule, EducationModule, ExperienceModule, CurrentMedicationModule, PatientModule, PrescriptionModule, ReportModule, OperationHistoryModule, HealthStatusModule, CallModule, SeedModule, S3Module, AppointmentModule],
   controllers: [AppController],
   providers: [AppService, {
     provide: APP_PIPE,

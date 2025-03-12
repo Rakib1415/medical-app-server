@@ -14,12 +14,8 @@ export class Report {
   })
   patient: Patient;
 
-
-  @ManyToOne(() => Doctor, (doctor) => doctor.reports, {
-    onDelete: 'CASCADE', // If a patient is deleted, their prescriptions are deleted too
-    eager: true, // Automatically fetch patient details when querying a prescription
-  })
-  doctor: Doctor;
+  @Column()
+  title : string;
 
   @Column()
   docPath : string;

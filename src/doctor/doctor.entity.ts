@@ -6,6 +6,7 @@ import { Experience } from 'src/experience/experience.entity';
 import { CurrentMedication } from 'src/current-medication/current-medication.entity';
 import { Prescription } from '@/prescription/prescription.entity';
 import { Report } from '@/report/report.entity';
+import { Appointment } from '@/appointment/appointment.entity';
 
 @Entity()
 export class Doctor {
@@ -34,9 +35,9 @@ export class Doctor {
   })
   prescriptions: Prescription[];
 
-  @OneToMany(() => Report, (report) => report.doctor, {
+  @OneToMany(() => Appointment, (appointment) => appointment.doctor, {
     cascade: true, // Automatically persist related prescriptions if a patient is saved
     onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
   })
-  reports: Report[];
+  appointments: Appointment[];
 }
