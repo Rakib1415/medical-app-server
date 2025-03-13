@@ -8,7 +8,7 @@ export class Prescription {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({default : ''})
   title : string;
 
   @ManyToOne(() => Patient, (patient) => patient.prescriptions, {
