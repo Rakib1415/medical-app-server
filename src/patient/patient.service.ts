@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Patient } from './patient.entity';
 import { Repository } from 'typeorm';
@@ -47,5 +47,26 @@ export class PatientService {
     Object.assign(patient, patientData)
     return this.patientRepository.save(patient);
   }
+
+  async findPatientByEmail(email: string): Promise<Patient> {
+    const patient = await this.patientRepository
+      .createQueryBuilder('patient')
+      .innerJoinAndSelect('patient.userId', 'user') // Join User table
+      .leftJoinAndSelect('patient.currentMedications', 'currentMedications')
+      .leftJoinAndSelect('patient.operationHistories', 'operationHistories')
+      .leftJoinAndSelect('patient.healthStatuses', 'healthStatuses')
+      .leftJoinAndSelect('patient.prescriptions', 'prescriptions')
+      .leftJoinAndSelect('patient.reports', 'reports')
+      .leftJoinAndSelect('patient.appointments', 'appointments')
+      .where('user.email = :email', { email }) // Filter by user email
+      .getOne();
+  
+    if (!patient) {
+      throw new NotFoundException('Patient not found');
+    }
+  
+    return patient;
+  }
+  
     
 }

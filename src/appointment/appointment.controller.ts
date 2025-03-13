@@ -1,8 +1,9 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { AppointmentService } from './appointment.service';
 import { Appointment } from './appointment.entity';
 import { CreateAppointmentDto } from './dtos/create-appointment.dto';
+import { UpdateApprovalDto } from './dtos/appointment.dto';
 
 @ApiTags('Appointments')
 @Controller('appointments')
@@ -23,6 +24,39 @@ export class AppointmentController {
         status : true,
        }
   }
+
+
+  @Get()
+  @ApiOperation({ summary: 'Get all appointments' })
+  @ApiResponse({ status: 200, description: 'List of all appointments', type: [Appointment] })
+  async getAllAppointments(): Promise<{ code: number; message: string; data: Appointment[]; status: boolean }> {
+    const data = await this.appointmentService.getAllAppointments();
+
+    return {
+      code: 200,
+      message: 'All appointments retrieved successfully!',
+      data,
+      status: true,
+    };
+  }
+
+
+  @Get(':appointmentId')
+  @ApiOperation({ summary: 'Get an appointment by ID' })
+  @ApiParam({ name: 'appointmentId', example: 1, description: 'ID of the appointment' })
+  @ApiResponse({ status: 200, description: 'Appointment details', type: Appointment })
+  @ApiResponse({ status: 404, description: 'Appointment not found' })
+  async getAppointmentById(@Param('appointmentId') appointmentId: number) {
+    const data = await this.appointmentService.getAppointmentById(appointmentId);
+
+    return {
+      code: 200,
+      message: 'Appointment retrieved successfully!',
+      data,
+      status: true,
+    };
+  }
+
   @Get('patient/:patientId')
   @ApiOperation({ summary: 'Get all appointments for a specific patient' })
   @ApiParam({ name: 'patientId', example: 2, description: 'ID of the patient' })
@@ -37,6 +71,23 @@ export class AppointmentController {
   @ApiResponse({ status: 200, description: 'List of appointments', type: [Appointment] })
   async getByDoctor(@Param('doctorId') doctorId: number): Promise<Appointment[]> {
     return this.appointmentService.getAppointmentsByDoctor(doctorId);
+  }
+
+  @Patch(':appointmentId/approve')
+  @ApiOperation({ summary: 'Approve or disapprove an appointment' })
+  @ApiParam({ name: 'appointmentId', example: 1, description: 'ID of the appointment' })
+  @ApiResponse({ status: 200, description: 'Appointment approval status updated', type: Appointment })
+  async updateApproval(
+    @Param('appointmentId') appointmentId: number
+  ) {
+    const data= this.appointmentService.updateApprovalStatus(appointmentId);
+
+    return {
+      code : '200',
+      message : "Appointment Approval successfully!",
+      data,
+      status : true,
+     }
   }
 }
 

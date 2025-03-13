@@ -7,6 +7,7 @@ import { Patient } from '@/patient/patient.entity';
 import { Report } from '@/report/report.entity';
 import { Prescription } from '@/prescription/prescription.entity';
 import { CreateAppointmentDto } from './dtos/create-appointment.dto';
+import { UpdateApprovalDto } from './dtos/appointment.dto';
 
 @Injectable()
 export class AppointmentService {
@@ -58,6 +59,25 @@ export class AppointmentService {
   
     return this.appointmentRepository.save(appointment);
   }
+  
+  async getAllAppointments(): Promise<Appointment[]> {
+    return this.appointmentRepository.find({
+      relations: ['doctor.user', 'patient.userId', 'reports', 'prescriptions'],
+    })
+  }
+
+  async getAppointmentById(appointmentId: number): Promise<Appointment> {
+    const appointment = await this.appointmentRepository.findOne({
+      where: { id: appointmentId },
+      relations: ['doctor.user', 'patient.userId', 'reports', 'prescriptions'],
+    });
+
+    if (!appointment) {
+      throw new NotFoundException('Appointment not found');
+    }
+
+    return appointment;
+  }
 
   async getAppointmentsByPatient(patientId: number): Promise<Appointment[]> {
     return this.appointmentRepository.find({
@@ -73,6 +93,16 @@ export class AppointmentService {
     });
   }
   
+  async updateApprovalStatus(appointmentId: number): Promise<Appointment> {
+    const appointment = await this.appointmentRepository.findOne({ where: { id: appointmentId } });
+
+    if (!appointment) {
+      throw new NotFoundException('Appointment not found');
+    }
+
+    appointment.isApproved = true;
+    return this.appointmentRepository.save(appointment);
+  }
   
 }
 

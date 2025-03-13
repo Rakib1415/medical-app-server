@@ -33,6 +33,9 @@ export class Appointment {
   @Column()
   accessTime: number;
 
+  @Column({type: 'boolean', default : false})
+  isApproved: boolean;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
