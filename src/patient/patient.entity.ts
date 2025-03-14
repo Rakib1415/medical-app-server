@@ -14,7 +14,7 @@ export class Patient {
 
   @OneToOne(() => User)
   @JoinColumn()
-  userId: number;
+  user: User;
 
   @OneToMany(() => CurrentMedication, (currentMedication) => currentMedication.patient)
   currentMedications: CurrentMedication[]

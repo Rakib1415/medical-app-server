@@ -54,9 +54,9 @@ export class ReportController {
     async create(@UploadedFile() file: any, @Body() reportData: any, @CurrentUser() user: User) {
   
      try{
-      
+      console.log("reportData", reportData)
     
-      const existingPatient = await this.patientService.findByUserId(user?.id);
+      const existingPatient = await this.patientService.findOne(reportData?.patientId);
   
       if(!existingPatient){
   

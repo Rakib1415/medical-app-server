@@ -1,15 +1,15 @@
-import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Patch, Param } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { Doctor } from './doctor.entity';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from '@/users/users.entity';
 import { AuthGuard } from 'src/common/guards/auth.guard';
-import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from 'src/users/users.service';
 
 @Controller('doctors')
 export class DoctorController {
-  constructor(private readonly doctorService: DoctorService, private readonly userService: UsersService) {}
+  constructor(private readonly doctorService: DoctorService, private readonly userService: UsersService) { }
 
   @Get()
   @ApiResponse({
@@ -87,7 +87,23 @@ export class DoctorController {
   async getAllActiveDoctors() {
     return this.doctorService.getAllDoctorsWithStatus();
   }
+  @Patch(':doctorId/approve')
+  @ApiOperation({ summary: 'Approve or disapprove a doctor' })
+  @ApiParam({ name: 'doctorId', example: 1, description: 'ID of the doctor' })
+  @ApiResponse({ status: 200, description: 'Doctor approval status updated', type: Doctor })
+  async updateApproval(
+    @Param('doctorId') doctorId: number
+  ) {
 
-  
+    const data = this.doctorService.updateApprovalStatus(doctorId);
+
+    return {
+      code: '200',
+      message: "Doctor Approval successfully!",
+      data,
+      status: true,
+    }
+  }
+
 }
 

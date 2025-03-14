@@ -1,9 +1,11 @@
 import { Controller, Post, Body, Get, Param, Patch } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { AppointmentService } from './appointment.service';
 import { Appointment } from './appointment.entity';
 import { CreateAppointmentDto } from './dtos/create-appointment.dto';
 import { UpdateApprovalDto } from './dtos/appointment.dto';
+import { User } from '@/users/users.entity';
+import { CurrentUser } from '@/common/decorators/current-user.decorator';
 
 @ApiTags('Appointments')
 @Controller('appointments')
@@ -11,6 +13,7 @@ export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
   @Post()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Create an appointment' })
   @ApiResponse({ status: 201, description: 'Appointment successfully created', type: Appointment })
   @ApiResponse({ status: 404, description: 'Doctor or Patient not found' })
@@ -74,11 +77,12 @@ export class AppointmentController {
   }
 
   @Patch(':appointmentId/approve')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Approve or disapprove an appointment' })
   @ApiParam({ name: 'appointmentId', example: 1, description: 'ID of the appointment' })
   @ApiResponse({ status: 200, description: 'Appointment approval status updated', type: Appointment })
   async updateApproval(
-    @Param('appointmentId') appointmentId: number
+    @Param('appointmentId') appointmentId: number, @CurrentUser() user: User
   ) {
     const data= this.appointmentService.updateApprovalStatus(appointmentId);
 

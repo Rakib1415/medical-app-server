@@ -68,7 +68,7 @@ export class MessageController {
           });
         const token = await this.jwtService.signAsync({email : body.email, otp},  { expiresIn: '10m' } );
         return {
-            message : 'Send OTP on Your Email!',
+            message : `Send OTP ${otp} on Your Email!`,
             data : {token, email : body.email},
             code : '200',
             status : true

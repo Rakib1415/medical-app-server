@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Doctor } from './doctor.entity';
@@ -63,6 +63,17 @@ async findOne(id: number): Promise<Doctor | null> {
 
   async delete(id: number): Promise<void> {
     await this.doctorRepository.delete(id);
+  }
+
+  async updateApprovalStatus(doctorId: number): Promise<Doctor> {
+    const doctor = await this.doctorRepository.findOne({ where: { id: doctorId } });
+
+    if (!doctor) {
+      throw new NotFoundException('Doctor not found');
+    }
+
+    doctor.isApproved = true;
+    return this.doctorRepository.save(doctor);
   }
 }
 

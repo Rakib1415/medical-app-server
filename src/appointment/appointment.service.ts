@@ -62,14 +62,14 @@ export class AppointmentService {
   
   async getAllAppointments(): Promise<Appointment[]> {
     return this.appointmentRepository.find({
-      relations: ['doctor.user', 'patient.userId', 'reports', 'prescriptions'],
+      relations: ['doctor.user', 'patient.user', 'reports', 'prescriptions'],
     })
   }
 
   async getAppointmentById(appointmentId: number): Promise<Appointment> {
     const appointment = await this.appointmentRepository.findOne({
       where: { id: appointmentId },
-      relations: ['doctor.user', 'patient.userId', 'reports', 'prescriptions'],
+      relations: ['doctor.user', 'patient.user', 'reports', 'prescriptions'],
     });
 
     if (!appointment) {
@@ -82,14 +82,14 @@ export class AppointmentService {
   async getAppointmentsByPatient(patientId: number): Promise<Appointment[]> {
     return this.appointmentRepository.find({
       where: { patient: { id: patientId } },
-      relations: ['doctor', 'doctor.user', 'patient', 'patient.userId', 'reports', 'prescriptions'],
+      relations: ['doctor', 'doctor.user', 'patient', 'patient.user', 'reports', 'prescriptions'],
     });
   }
   
   async getAppointmentsByDoctor(doctorId: number): Promise<Appointment[]> {
     return this.appointmentRepository.find({
       where: { doctor: { id: doctorId } },
-      relations: ['doctor', 'doctor.user', 'patient', 'patient.userId', 'reports', 'prescriptions'],
+      relations: ['doctor', 'doctor.user', 'patient', 'patient.user', 'reports', 'prescriptions'],
     });
   }
   

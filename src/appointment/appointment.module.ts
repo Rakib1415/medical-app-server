@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppointmentController } from './appointment.controller';
 import { AppointmentService } from './appointment.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,10 +7,21 @@ import { Doctor } from '@/doctor/doctor.entity';
 import { Patient } from '@/patient/patient.entity';
 import { Prescription } from '@/prescription/prescription.entity';
 import { Report } from '@/report/report.entity';
+import { CurrentUserMiddleware } from '@/common/middleware/current-user.middleware';
+import { UsersModule } from '@/users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Appointment, Doctor, Patient, Report, Prescription])],
+  imports: [TypeOrmModule.forFeature([Appointment, Doctor, Patient, Report, Prescription]), UsersModule],
   controllers: [AppointmentController],
   providers: [AppointmentService]
 })
-export class AppointmentModule {}
+export class AppointmentModule {
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CurrentUserMiddleware).exclude(
+      { path: 'appointments', method: RequestMethod.GET },
+      'appointments/{*splat}',
+    ).forRoutes(AppointmentController);
+  }
+
+}

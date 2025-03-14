@@ -14,7 +14,7 @@ export class PatientService {
 
   async create(createPatientDto : Partial<CreatePatientDto>): Promise<Patient> {
     const patient = this.patientRepository.create();
-    patient.userId = createPatientDto.userId;
+    patient.user = createPatientDto.user;
     if(createPatientDto.currentMedication){
         patient.currentMedications = [createPatientDto.currentMedication]
     }
@@ -29,11 +29,11 @@ export class PatientService {
 
   async findAll(): Promise<Patient[]> {
     
-    return this.patientRepository.createQueryBuilder('patient').leftJoinAndSelect('patient.currentMedications', 'currentMedications').leftJoinAndSelect('patient.operationHistories', 'operationHistories').leftJoinAndSelect('patient.healthStatuses', 'healthStatuses').leftJoin('patient.userId', 'user').addSelect(['user.id', 'user.username', 'user.email']).getMany();
+    return this.patientRepository.createQueryBuilder('patient').leftJoinAndSelect('patient.currentMedications', 'currentMedications').leftJoinAndSelect('patient.operationHistories', 'operationHistories').leftJoinAndSelect('patient.healthStatuses', 'healthStatuses').leftJoin('patient.user', 'user').addSelect(['user.id', 'user.username', 'user.email']).getMany();
   }
 
   async findByUserId(userId: number): Promise<Patient | null> {
-    return this.patientRepository.findOne({ where: { userId }, relations: ['userId', 'currentMedications', 'operationHistories', 'healthStatuses'] });
+    return this.patientRepository.findOne( {where: { user: { id: userId } },  relations: ['user', 'currentMedications', 'operationHistories', 'healthStatuses'] });
   }
   async findOne(id: number): Promise<Patient | null> {
     return this.patientRepository.findOne({ where: { id } });
@@ -51,7 +51,7 @@ export class PatientService {
   async findPatientByEmail(email: string): Promise<Patient> {
     const patient = await this.patientRepository
       .createQueryBuilder('patient')
-      .innerJoinAndSelect('patient.userId', 'user') // Join User table
+      .innerJoinAndSelect('patient.user', 'user') // Join User table
       .leftJoinAndSelect('patient.currentMedications', 'currentMedications')
       .leftJoinAndSelect('patient.operationHistories', 'operationHistories')
       .leftJoinAndSelect('patient.healthStatuses', 'healthStatuses')

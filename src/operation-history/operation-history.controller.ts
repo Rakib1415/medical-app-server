@@ -53,7 +53,7 @@ export class OperationHistoryController {
      const operationHistory = await this.operationHistory.create({ descriptions : operationHistoryData?.descriptions, startDate : operationHistoryData?.startDate, endDate : operationHistoryData?.endDate});
    
      if(!existingPatient){
-       await this.patientService.create({userId : user?.id, operationHistory})
+       await this.patientService.create({user : user, operationHistory})
         return {
          code : '201',
          message : "Operation history data created successfully!",

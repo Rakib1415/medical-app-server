@@ -64,7 +64,7 @@ export class CurrentMedicationController {
  
    
      if(!existingPatient){
-       await this.patientService.create({userId : user?.id, currentMedication})
+       await this.patientService.create({user : user, currentMedication})
         return {
          code : '201',
          message : "Current medication data created successfully!",

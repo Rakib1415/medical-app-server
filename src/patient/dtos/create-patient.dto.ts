@@ -1,3 +1,4 @@
+import { User } from '@/users/users.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { CurrentMedication } from 'src/current-medication/current-medication.entity';
 import { HealthStatus } from 'src/health-status/health-status.entity';
@@ -9,7 +10,7 @@ export class CreatePatientDto {
     description: 'The ID of the user associated with the patient',
     example: 1,
   })
-  userId: number;
+  user: User;
 
   @ApiProperty({
     description: 'currentMedication record associated with the patient',

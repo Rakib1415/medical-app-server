@@ -53,13 +53,16 @@ export class PrescriptionController {
   })
   async create(@UploadedFile() file: any, @Body() prescriptionData: any, @CurrentUser() user: User) {
 
-    if (!prescriptionData.patientId) {
+    if (!prescriptionData?.patientId) {
       throw new BadRequestException('Patient ID is required');
     }
 
+    if (!prescriptionData?.doctorId) {
+      throw new BadRequestException('Doctor ID is required');
+    }
 
    try{
-    const existingDoctor = await this.doctorService.findByUserId(user?.id);
+    const existingDoctor = await this.doctorService.findOne(prescriptionData?.doctorId);
     const existingPatient = await this.patientService.findOne(prescriptionData.patientId);
   
     if(!existingDoctor){

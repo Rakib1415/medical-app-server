@@ -40,4 +40,7 @@ export class Doctor {
     onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
   })
   appointments: Appointment[];
+
+  @Column({default : false})
+  isApproved : boolean;
 }

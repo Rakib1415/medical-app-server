@@ -20,7 +20,7 @@ export class ReportService {
         
         const reports = await this.reportRepository.find({
           where: { patient: { id: patientId } },
-          relations: ['patient', 'patient.userId'], // Load patient and its user details
+          relations: ['patient', 'patient.user'], // Load patient and its user details
           order: { reportDate: 'DESC' },
         });
         

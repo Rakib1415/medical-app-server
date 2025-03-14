@@ -20,7 +20,7 @@ export class PrescriptionService {
         
         const prescriptions = await this.prescriptionRepository.find({
           where: { patient: { id: patientId } },
-          relations: ['doctor', 'doctor.user', 'patient', 'patient.userId'], // Load patient and its user details
+          relations: ['doctor', 'doctor.user', 'patient', 'patient.user'], // Load patient and its user details
           order: { prescriptionDate: 'DESC' },
         });
         

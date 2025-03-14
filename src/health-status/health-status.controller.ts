@@ -53,7 +53,7 @@ export class HealthStatusController {
      const healthStatus = await this.HealthStatusService.create(healthStatusData);
    
      if(!existingPatient){
-       await this.patientService.create({userId : user?.id, healthStatus})
+       await this.patientService.create({user : user, healthStatus})
         return {
          code : '201',
          message : "Health status data created successfully!",
