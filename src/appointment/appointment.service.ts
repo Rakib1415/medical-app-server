@@ -92,14 +92,12 @@ export class AppointmentService {
       relations: ['doctor', 'doctor.user', 'patient', 'patient.user', 'reports', 'prescriptions'],
     });
   }
+
+  async findOne(id: number): Promise<Appointment | null> {
+    return this.appointmentRepository.findOne({ where: { id } });
+  }
   
-  async updateApprovalStatus(appointmentId: number): Promise<Appointment> {
-    const appointment = await this.appointmentRepository.findOne({ where: { id: appointmentId } });
-
-    if (!appointment) {
-      throw new NotFoundException('Appointment not found');
-    }
-
+  async updateApprovalStatus(appointment : any): Promise<Appointment> {
     appointment.isApproved = true;
     return this.appointmentRepository.save(appointment);
   }

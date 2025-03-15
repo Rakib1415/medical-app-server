@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Get, Patch, Param } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Patch, Param, NotFoundException } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { Doctor } from './doctor.entity';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
@@ -95,12 +95,24 @@ export class DoctorController {
     @Param('doctorId') doctorId: number
   ) {
 
-    const data = this.doctorService.updateApprovalStatus(doctorId);
+    const doctor = await this.doctorService.findOne(doctorId);
+
+    if (!doctor) {
+
+      return {
+        code: '404',
+        message: "Doctor not found!",
+        data: null,
+        status: false,
+      }
+    }
+
+    this.doctorService.updateApprovalStatus(doctor);
 
     return {
       code: '200',
       message: "Doctor Approval successfully!",
-      data,
+      data: doctor,
       status: true,
     }
   }

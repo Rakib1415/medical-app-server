@@ -65,13 +65,7 @@ async findOne(id: number): Promise<Doctor | null> {
     await this.doctorRepository.delete(id);
   }
 
-  async updateApprovalStatus(doctorId: number): Promise<Doctor> {
-    const doctor = await this.doctorRepository.findOne({ where: { id: doctorId } });
-
-    if (!doctor) {
-      throw new NotFoundException('Doctor not found');
-    }
-
+  async updateApprovalStatus(doctor: any): Promise<Doctor> {
     doctor.isApproved = true;
     return this.doctorRepository.save(doctor);
   }

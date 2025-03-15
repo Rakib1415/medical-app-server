@@ -10,22 +10,22 @@ import { CurrentUser } from '@/common/decorators/current-user.decorator';
 @ApiTags('Appointments')
 @Controller('appointments')
 export class AppointmentController {
-  constructor(private readonly appointmentService: AppointmentService) {}
+  constructor(private readonly appointmentService: AppointmentService) { }
 
   @Post()
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create an appointment' })
   @ApiResponse({ status: 201, description: 'Appointment successfully created', type: Appointment })
   @ApiResponse({ status: 404, description: 'Doctor or Patient not found' })
-  async create(@Body() dto: CreateAppointmentDto){
-   
+  async create(@Body() dto: CreateAppointmentDto) {
+
     const data = this.appointmentService.createAppointment(dto);
     return {
-        code : '201',
-        message : "Appointment created successfully!",
-        data,
-        status : true,
-       }
+      code: '201',
+      message: "Appointment created successfully!",
+      data,
+      status: true,
+    }
   }
 
 
@@ -84,14 +84,26 @@ export class AppointmentController {
   async updateApproval(
     @Param('appointmentId') appointmentId: number, @CurrentUser() user: User
   ) {
-    const data= this.appointmentService.updateApprovalStatus(appointmentId);
+
+    const appointment = await this.appointmentService.findOne(appointmentId);
+
+    if (!appointment) {
+
+      return {
+        code: '404',
+        message: "Appointment not found!",
+        data: null,
+        status: false,
+      }
+    }
+    this.appointmentService.updateApprovalStatus(appointment);
 
     return {
-      code : '200',
-      message : "Appointment Approval successfully!",
-      data,
-      status : true,
-     }
+      code: '200',
+      message: "Appointment Approval successfully!",
+      data: appointment,
+      status: true,
+    }
   }
 }
 
