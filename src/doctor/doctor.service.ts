@@ -37,9 +37,21 @@ export class DoctorService {
     }));
   }
 
-  async findAll(): Promise<Doctor[]> {
+  async findAll(isApproved?:any): Promise<Doctor[]> {
     
-    return this.doctorRepository.createQueryBuilder('doctor').where({isApproved : true}).leftJoinAndSelect('doctor.educations', 'educations').leftJoinAndSelect('doctor.experiences', 'experiences').leftJoin('doctor.user', 'user').addSelect(['user.id', 'user.username', 'user.email']).getMany();
+    const query = this.doctorRepository
+    .createQueryBuilder('doctor')
+    .leftJoinAndSelect('doctor.educations', 'educations')
+    .leftJoinAndSelect('doctor.experiences', 'experiences')
+    .leftJoin('doctor.user', 'user')
+    .addSelect(['user.id', 'user.username', 'user.email']);
+
+  // Apply the filter only if isApproved is provided
+  if (isApproved !== undefined) {
+    query.where('doctor.isApproved = :isApproved', { isApproved });
+  }
+
+  return query.getMany();
   }
   async findByUserId(userId: number): Promise<Doctor | null> {
     return this.doctorRepository.findOne({ 
