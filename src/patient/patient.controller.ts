@@ -1,6 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { PatientService } from './patient.service';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Patient } from './patient.entity';
 
 @Controller('patient')
@@ -44,11 +44,12 @@ export class PatientController {
       return this.patentService.findAll();
     }
 
-    @Get('find-by-email')
+    @Get(':email')
     @ApiOperation({ summary: 'Find patient by email' })
+    @ApiParam({ name: 'email', example: 'test@gmail.com', description: 'patient email' })
     @ApiResponse({ status: 200, description: 'Patient details', type: Patient })
     @ApiResponse({ status: 404, description: 'Patient not found' })
-    async getPatientByEmail(@Query('email') email: string) {
+    async getPatientByEmail(@Param('email') email: string) {
       const data = await this.patentService.findPatientByEmail(email);
   
       return {

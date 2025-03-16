@@ -39,7 +39,7 @@ export class DoctorService {
 
   async findAll(): Promise<Doctor[]> {
     
-    return this.doctorRepository.createQueryBuilder('doctor').leftJoinAndSelect('doctor.educations', 'educations').leftJoinAndSelect('doctor.experiences', 'experiences').leftJoin('doctor.user', 'user').addSelect(['user.id', 'user.username', 'user.email']).getMany();
+    return this.doctorRepository.createQueryBuilder('doctor').where({isApproved : true}).leftJoinAndSelect('doctor.educations', 'educations').leftJoinAndSelect('doctor.experiences', 'experiences').leftJoin('doctor.user', 'user').addSelect(['user.id', 'user.username', 'user.email']).getMany();
   }
   async findByUserId(userId: number): Promise<Doctor | null> {
     return this.doctorRepository.findOne({ 
